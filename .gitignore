@@ -1,3 +1,5 @@
 /vendor/
 /.idea/
 /composer.phar
+/MyConfig/MyException.Config.php
+/MyConfig/MySQL.Config.php
