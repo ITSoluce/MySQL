@@ -91,11 +91,11 @@ class sql
 			
 			if ($statement === FALSE)
                         {
-                            throw new \Exception('Requête non executée : $query ('.$this->Ressource->errorInfo()[2].')');
+                            throw new \Exception('Requête non executée : '.$query.' ('.$this->Ressource->errorInfo()[2].')');
                         }
                     }
 		catch (\Exception $e) {
-                    throw new \Exception('Requête non executée : $query ('.$this->Ressource->errorInfo()[2].')');
+                    throw new \Exception('Requête non executée : '.$query.' ('.$this->Ressource->errorInfo()[2].')');
 		}
 		return $statement;
 	}
