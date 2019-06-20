@@ -4,54 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "baa8918a959cfdfdfbf4968e8ee87b93",
+    "content-hash": "3d777ad5fbab90fabc6044d2eb2f4543",
     "packages": [
-        {
-            "name": "itsoluce/my-exception",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ITSoluce/MyException.git",
-                "reference": "41d70f3f11573915c39525b772f0282b7349cc1f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ITSoluce/MyException/zipball/41d70f3f11573915c39525b772f0282b7349cc1f",
-                "reference": "41d70f3f11573915c39525b772f0282b7349cc1f",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0.0",
-                "phpmailer/phpmailer": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "MyException": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Renaud PLATEL",
-                    "email": "renaud.platel@itsoluce.com"
-                }
-            ],
-            "description": "exception class",
-            "time": "2019-05-22T07:21:42+00:00"
-        },
         {
             "name": "phpmailer/phpmailer",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "b70b6eec0727c9d8c201893271504bae688d6d4e"
+                "reference": "511413a6eaeb167fa88282d437766d34510548b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/b70b6eec0727c9d8c201893271504bae688d6d4e",
-                "reference": "b70b6eec0727c9d8c201893271504bae688d6d4e",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/511413a6eaeb167fa88282d437766d34510548b8",
+                "reference": "511413a6eaeb167fa88282d437766d34510548b8",
                 "shasum": ""
             },
             "require": {
@@ -104,14 +70,13 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2019-05-24T08:49:48+00:00"
+            "time": "2019-06-05T13:16:33+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "itsoluce/my-exception": 20,
         "phpmailer/phpmailer": 20
     },
     "prefer-stable": false,

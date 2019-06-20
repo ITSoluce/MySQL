@@ -32,11 +32,8 @@ class sql
 		$this->TransactionMode = $transactionmode;
 		$this->Debug = $debug;
 	
-		if (!($this->Ressource = $this->sql_connect()))
-                {
-                    throw new \MyException\MyException("Erreur connection");
-                }
-		$this->set_Datebase($this->Database);
+		$this->Ressource = $this->sql_connect();
+		$this->set_Database($this->Database);
 	}
 	
 	function get_Database()
@@ -44,7 +41,7 @@ class sql
 		return $this->Database;
 	}
 	
-	function set_Datebase($Value)
+	function set_Database($Value)
 	{
 		$this->Datebase = $Value;
 		$this->sql_query("USE `".$Value."`");
@@ -68,23 +65,13 @@ class sql
 
                     $this->Ressource = new \PDO($connectionstring, $this->User, $this->Password);
 
-            } catch (\MyException\MyException $e) {
+            } catch (\Exception $e) {
                     $FileName = 'SQLLoginError.txt';
                     $LifeDelay = 5;
                     if ( (!file_exists($FileName)) || ( filemtime($FileName) < mktime(date("G"),(int)date("i")-$LifeDelay,date("s"),date("m"),date("d"),date("Y")) ) )
                     {
                             error_log("Mail le ".date("Y-m-d H:i:s"), 3, $FileName);
-                            /*
-                             // Le mail
-                             $message = "Acces SQL Impossible ( PHP PDO ) sur ".$LinkSQLH." Utilisateur ".$LinkSQLU." (".$_SERVER['SERVER_NAME']." / ".$_SERVER['COMPUTERNAME'].")";
-                             $headers = 'From: support@akeo.fr' . "\r\nReply-To: support@akeo.fr";
-
-                             ini_set( 'sendmail_from', "support@akeo.fr" );
-                             ini_set( 'SMTP', "mail.akeo.fr" );
-                             ini_set( 'smtp_port', 25 );
-                             // Envoi du mail
-                             mail('renaud.platel@gmail.com', 'Erreur SQL ( PHP PDO ) '.$_SERVER['COMPUTERNAME'], $message,$headers);
-                             */
+                            throw new \Exception('Erreur connexion SQL');
                     }
 
                     $this->Ressource = false;
@@ -104,11 +91,11 @@ class sql
 			
 			if ($statement === FALSE)
                         {
-                            throw new \MyException\MyException('Requête non executée');
+                            throw new \Exception('Requête non executée : $query ('.$this->Ressource->errorInfo()[2].')');
                         }
                     }
-		catch (\MyException\MyException $e) {
-			return false;
+		catch (\Exception $e) {
+                    throw new \Exception('Requête non executée : $query ('.$this->Ressource->errorInfo()[2].')');
 		}
 		return $statement;
 	}
@@ -121,8 +108,9 @@ class sql
 				$statement->Count= count($statement->fetchAll());
 				$statement->execute();
 			}
-			catch (\MyException\MyException $e) {
+			catch (\Exception $e) {
 				$statement->Count = 0;
+                                throw new \Exception('Erreur dans MySQL Class : sql_num_rows');
 			}
 		}
 		
@@ -138,8 +126,9 @@ class sql
 		if ((!isset($statement->Result))||(is_null($statement->Result)))
 		{
 			try {
-				$Result = $statement->fetchAll(PDO::FETCH_BOTH);
-			} catch (\MyException\MyException $e) {
+                            $Result = $statement->fetchAll(PDO::FETCH_BOTH);
+			} catch (\Exception $e) {
+                            throw new \Exception('Erreur dans MySQL Class : sql_result');
 			}
 			$i=0;
 			foreach ($Result as $row)
@@ -163,7 +152,8 @@ class sql
 		{
 			try {
 				$rows = $statement->fetch(PDO::FETCH_ASSOC);
-			} catch (\MyException\MyException $e) {
+			} catch (\Exception $e) {
+                            throw new \Exception('Erreur dans MySQL Class : sql_num_fields');
 			}
 			if ($rows)
 			{
@@ -190,7 +180,8 @@ class sql
 		{
 			try {
 				$rows = $statement->fetch(PDO::FETCH_ASSOC);
-			} catch (\MyException\MyException $e) {
+			} catch (\Exception $e) {
+                            throw new \Exception('Erreur dans MySQL Class : sql_field_name');
 			}
 			if ($rows)
 			{
@@ -218,7 +209,8 @@ class sql
 				$object = $statement->fetchObject();
 			else
 				$object = $statement->fetchObject($classname);
-		} catch (\MyException\MyException $e) {
+		} catch (Exception $e) {
+                    throw new \Exception('Erreur dans MySQL Class : sql_fetch_object');
 		}
 		return $object;
 	}
@@ -227,7 +219,8 @@ class sql
 	{
 		try {
 			$array = $statement->fetch(PDO::FETCH_BOTH);
-		} catch (\MyException\MyException $e) {
+		} catch (\Exception $e) {
+                    throw new \Exception('Erreur dans MySQL Class : sql_fetch_array');
 		}
 		
 		return $array;
@@ -242,7 +235,8 @@ class sql
 	{
 		try {
 			$array = $statement->fetch(PDO::FETCH_BOTH);
-		} catch (PDOException $e) {
+		} catch (\Exception $e) {
+                    throw new \Exception('Erreur dans MySQL Class : sql_fetch_row');
 		}
 		return $array;
 	}
