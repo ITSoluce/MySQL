@@ -77,9 +77,8 @@ class sql
                     $this->Ressource = false;
             }
 
-            /*if (!($conn))
-             header('Location: http://icmanager.ffbad/maintenance.php');
-             */
+            if (!($this->Ressource))
+                throw new \Exception('Erreur connexion SQL');
 
             return $this->Ressource;
 	}	
@@ -126,7 +125,7 @@ class sql
 		if ((!isset($statement->Result))||(is_null($statement->Result)))
 		{
 			try {
-                            $Result = $statement->fetchAll(PDO::FETCH_BOTH);
+                            $Result = $statement->fetchAll(\PDO::FETCH_BOTH);
 			} catch (\Exception $e) {
                             throw new \Exception('Erreur dans MySQL Class : sql_result');
 			}
@@ -151,7 +150,7 @@ class sql
 		if ((!isset($statement->Field))||(is_null($statement->Field)))
 		{
 			try {
-				$rows = $statement->fetch(PDO::FETCH_ASSOC);
+				$rows = $statement->fetch(\PDO::FETCH_ASSOC);
 			} catch (\Exception $e) {
                             throw new \Exception('Erreur dans MySQL Class : sql_num_fields');
 			}
@@ -179,7 +178,7 @@ class sql
 		if ((!isset($statement->Field))||(is_null($statement->Field)))
 		{
 			try {
-				$rows = $statement->fetch(PDO::FETCH_ASSOC);
+				$rows = $statement->fetch(\PDO::FETCH_ASSOC);
 			} catch (\Exception $e) {
                             throw new \Exception('Erreur dans MySQL Class : sql_field_name');
 			}
@@ -218,7 +217,7 @@ class sql
 	function sql_fetch_array($statement)
 	{
 		try {
-			$array = $statement->fetch(PDO::FETCH_BOTH);
+			$array = $statement->fetch(\PDO::FETCH_BOTH);
 		} catch (\Exception $e) {
                     throw new \Exception('Erreur dans MySQL Class : sql_fetch_array');
 		}
@@ -234,7 +233,7 @@ class sql
 	function sql_fetch_row($statement)
 	{
 		try {
-			$array = $statement->fetch(PDO::FETCH_BOTH);
+			$array = $statement->fetch(\PDO::FETCH_BOTH);
 		} catch (\Exception $e) {
                     throw new \Exception('Erreur dans MySQL Class : sql_fetch_row');
 		}
