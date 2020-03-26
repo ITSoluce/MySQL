@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /* paramètres de connexion à la base de données */
 $MySQLServer = "*";
 $MySQLUser = "*";
