@@ -1,5 +1,8 @@
 <?php
 namespace MySQL;
+
+use phpDocumentor\Reflection\Types\Nullable;
+
 /*
  * Class manage sql
  */
@@ -9,7 +12,7 @@ class sql
 	private $Server;
 	private $User;
 	private $Password;
-        private $Port;
+    private $Port;
         
 	public $Database;
 	
@@ -60,27 +63,25 @@ class sql
 	
 	function sql_connect()
 	{
-            try {
-                    $connectionstring = 'mysql:host='. $this->Server .';port='. $this->Port .';dbname='. $this->Database.";charset=".$this->Charset;
+		try {
+			$connectionstring = 'mysql:host='. $this->Server .';port='. $this->Port .';dbname='. $this->Database.";charset=".$this->Charset;
+			$this->Ressource = new \PDO($connectionstring, $this->User, $this->Password);
+		} catch (\Exception $e) {
+			$FileName = 'SQLLoginError.txt';
+			$LifeDelay = 5;
+			if ( (!file_exists($FileName)) || ( filemtime($FileName) < mktime(date("G"),(int)date("i")-$LifeDelay,date("s"),date("m"),date("d"),date("Y")) ) )
+			{
+				error_log("Erreur le ".date("Y-m-d H:i:s")."\n", 3, $FileName);
+				throw new \Exception('Erreur connexion SQL');
+			}
 
-                    $this->Ressource = new \PDO($connectionstring, $this->User, $this->Password);
+			$this->Ressource = false;
+		}
 
-            } catch (\Exception $e) {
-                    $FileName = 'SQLLoginError.txt';
-                    $LifeDelay = 5;
-                    if ( (!file_exists($FileName)) || ( filemtime($FileName) < mktime(date("G"),(int)date("i")-$LifeDelay,date("s"),date("m"),date("d"),date("Y")) ) )
-                    {
-                            error_log("Mail le ".date("Y-m-d H:i:s"), 3, $FileName);
-                            throw new \Exception('Erreur connexion SQL');
-                    }
+		if (!($this->Ressource))
+			throw new \Exception('Erreur connexion SQL');
 
-                    $this->Ressource = false;
-            }
-
-            if (!($this->Ressource))
-                throw new \Exception('Erreur connexion SQL');
-
-            return $this->Ressource;
+		return $this->Ressource;
 	}	
 	
 	function sql_query($query)
@@ -208,7 +209,7 @@ class sql
 				$object = $statement->fetchObject();
 			else
 				$object = $statement->fetchObject($classname);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
                     throw new \Exception('Erreur dans MySQL Class : sql_fetch_object');
 		}
 		return $object;
@@ -227,7 +228,7 @@ class sql
 	
 	function sql_fetch_assoc($statement)
 	{
-		return sql_fetch_array($statement);
+		return $this->sql_fetch_array($statement);
 	}
 	
 	function sql_fetch_row($statement)
@@ -252,7 +253,7 @@ class sql
 	
 	function sql_rows_affected($statement)
 	{
-		return sql_affected_rows($statement);
+		return $this->sql_affected_rows($statement);
 	}
 	
 	function sql_field_type($statement, $offset )
@@ -271,7 +272,7 @@ class sql
 		$i=0;
 		while ($i<$rowid)
 		{
-			sql_fetch_array($statement);
+			$this->sql_fetch_array($statement);
 			$i++;
 		}
 	}
@@ -350,17 +351,7 @@ class sql
 		return $this->Ressource->quote($val);
 	}
 	
-	function sql_error($ressource)
+	function sql_error($ressource = null)
 	{
-		/*
-		if (isnull($ressource))
-			return(false);
-		
-		if ( ( $ressource == false ) && ( ( function_exists($this->errorInfo()) ) || ( method_exists($this->errorInfo()) ) ) )
-		{
-			return implode( " " ,$this->errorInfo() );
-		}
-		*/
-		return(false);
 	}
 }
