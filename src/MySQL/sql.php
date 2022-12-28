@@ -266,6 +266,11 @@ class sql
 	{
 	}
 	
+	function sql_reset_pointer($statement)
+	{
+		$statement->execute();
+	}
+	
 	function sql_data_seek($statement,$rowid)
 	{
 		$statement->execute();
