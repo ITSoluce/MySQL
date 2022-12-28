@@ -1,0 +1,6 @@
+[20-Jun-2019 13:24:08 UTC] PHP Fatal error:  Uncaught Exception: Erreur connexion SQL in E:\Dropbox\workspace\MySQL\src\MySQL\sql.php:74
+Stack trace:
+#0 E:\Dropbox\workspace\MySQL\src\MySQL\sql.php(35): MySQL\sql->sql_connect()
+#1 E:\Dropbox\workspace\MySQL\test\test.php(5): MySQL\sql->__construct('*', '*', '*', '*', 3306, 0, 1, 'UTF8')
+#2 {main}
+  thrown in E:\Dropbox\workspace\MySQL\src\MySQL\sql.php on line 74
