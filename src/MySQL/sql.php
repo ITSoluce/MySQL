@@ -327,7 +327,7 @@ class sql
 	}
 	
 	function lastInsertId() {
-		return sql_insert_id();
+		return $this->sql_insert_id();
 	}
 	
 	/**
