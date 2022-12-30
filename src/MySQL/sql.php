@@ -359,4 +359,19 @@ class sql
 	function sql_error($ressource = null)
 	{
 	}
+	
+	function beginTransaction()
+	{
+		$this->Ressource->beginTransaction();
+	}
+	
+	function rollBack()
+	{
+		$this->Ressource->rollBack();
+	}
+
+	function commit()
+	{
+		$this->Ressource->commit();
+	}
 }
