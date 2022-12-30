@@ -326,6 +326,10 @@ class sql
 		return $this->Ressource->lastInsertId($name);
 	}
 	
+	function lastInsertId() {
+		return sql_insert_id();
+	}
+	
 	/**
 	 *
 	 * @name table
