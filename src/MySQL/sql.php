@@ -241,6 +241,10 @@ class sql
 		return $array;
 	}
 	
+	function errorInfo($objet = null) {
+		return sql_get_last_message($objet);
+	}
+	
 	function sql_get_last_message($objet = null)
 	{
 		if (is_null($objet))
