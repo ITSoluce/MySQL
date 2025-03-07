@@ -30,7 +30,7 @@ class sql
 		$this->User = $user;
 		$this->Password = $password;
 		$this->Database = $database;
-                $this->Port = $port;
+        $this->Port = $port;
 		$this->Charset = $charset;
 		$this->TransactionMode = $transactionmode;
 		$this->Debug = $debug;
@@ -46,7 +46,6 @@ class sql
 	
 	function set_Database($Value)
 	{
-		$this->Datebase = $Value;
 		$this->sql_query("USE `".$Value."`");
 		return $Value;
 	}
@@ -90,60 +89,35 @@ class sql
 			$statement = $this->Ressource->query($query);
 			
 			if ($statement === FALSE)
-                        {
-                            throw new \Exception('Requête non executée : '.$query.' ('.$this->Ressource->errorInfo()[2].')');
-                        }
-                    }
+			{
+				throw new \Exception('Requête non executée : '.$query.' ('.$this->Ressource->errorInfo()[2].')');
+			}
+		}
 		catch (\Exception $e) {
-                    throw new \Exception('Requête non executée : '.$query.' ('.$this->Ressource->errorInfo()[2].')');
+			throw new \Exception('Requête non executée : '.$query.' ('.$this->Ressource->errorInfo()[2].')');
 		}
 		return $statement;
 	}
 	
 	function sql_num_rows($statement)
 	{	
-		if ((!isset($statement->Count))||(is_null($statement->Count)))
-		{
-			try {
-				$statement->Count= count($statement->fetchAll());
-				$statement->execute();
-			}
-			catch (\Exception $e) {
-				$statement->Count = 0;
-                                throw new \Exception('Erreur dans MySQL Class : sql_num_rows');
-			}
-		}
-		
-		return $statement->Count;
+		return $statement->rowCount();
 	}
 	
-	function sql_result($statement,$Row,$Offset)
+	function sql_result($statement,$ThisRow,$Offset)
 	{
-		if ($Row == '')
+		if ($ThisRow == '')
 		{
-			$Row = 0;	
+			$ThisRow = 0;
 		}
-		if ((!isset($statement->Result))||(is_null($statement->Result)))
-		{
-			try {
-                            $Result = $statement->fetchAll(\PDO::FETCH_BOTH);
-			} catch (\Exception $e) {
-                            throw new \Exception('Erreur dans MySQL Class : sql_result');
-			}
-			$i=0;
-			foreach ($Result as $row)
-			{
-				foreach ($row as $key => $value)
-				{
-					$ResultEnd[$i][strtolower($key)] = $value;
-				}
-				$i++;
-			}
-			
-			$statement->Result = $ResultEnd;
+
+		$row = $this->sql_data_seek($statement,$ThisRow);
+		
+		if (isset($row[$Offset])) {
+			return $row[$Offset];
 		}
-	
-		return $statement->Result[$Row][strtolower($Offset)];
+
+		throw new \Exception('Row '.$ThisRow.' / Offset '.$Offset.' non trouvé : '.$statement->queryString.' ('.$this->Ressource->errorInfo()[2].')');
 	}
 	
 	function sql_num_fields($statement)
@@ -153,7 +127,7 @@ class sql
 			try {
 				$rows = $statement->fetch(\PDO::FETCH_ASSOC);
 			} catch (\Exception $e) {
-                            throw new \Exception('Erreur dans MySQL Class : sql_num_fields');
+				throw new \Exception('Erreur dans MySQL Class : sql_num_fields');
 			}
 			if ($rows)
 			{
@@ -161,7 +135,6 @@ class sql
 				{
 					$row[]=$key;
 				}
-				$statement->Field=$row;
 				$statement->execute();
 				return count($rows);
 			}
@@ -181,7 +154,7 @@ class sql
 			try {
 				$rows = $statement->fetch(\PDO::FETCH_ASSOC);
 			} catch (\Exception $e) {
-                            throw new \Exception('Erreur dans MySQL Class : sql_field_name');
+				throw new \Exception('Erreur dans MySQL Class : sql_field_name');
 			}
 			if ($rows)
 			{
@@ -189,7 +162,6 @@ class sql
 				{
 					$row[]=$key;
 				}
-				$statement->Field=$row;
 				$statement->execute();
 				return $row[$i];
 			}
@@ -202,7 +174,7 @@ class sql
 		}
 	}
 		
-	function sql_fetch_object ($statement, $classname = null)
+	function sql_fetch_object($statement, $classname = null)
 	{
 		try {
 			if ($classname == null)
@@ -210,7 +182,7 @@ class sql
 			else
 				$object = $statement->fetchObject($classname);
 		} catch (\Exception $e) {
-                    throw new \Exception('Erreur dans MySQL Class : sql_fetch_object');
+			throw new \Exception('Erreur dans MySQL Class : sql_fetch_object');
 		}
 		return $object;
 	}
@@ -220,7 +192,7 @@ class sql
 		try {
 			$array = $statement->fetch(\PDO::FETCH_BOTH);
 		} catch (\Exception $e) {
-                    throw new \Exception('Erreur dans MySQL Class : sql_fetch_array');
+			throw new \Exception('Erreur dans MySQL Class : sql_fetch_array');
 		}
 		
 		return $array;
@@ -236,7 +208,7 @@ class sql
 		try {
 			$array = $statement->fetch(\PDO::FETCH_BOTH);
 		} catch (\Exception $e) {
-                    throw new \Exception('Erreur dans MySQL Class : sql_fetch_row');
+			throw new \Exception('Erreur dans MySQL Class : sql_fetch_row');
 		}
 		return $array;
 	}
@@ -248,10 +220,10 @@ class sql
 	function sql_get_last_message($objet = null)
 	{
 		if (is_null($objet))
-			Return "Fonctionne plus";
-		if (get_class($objet)=='PDO')
-			Return $objet->errorInfo();
-		if (get_class($objet->statement)=='PDOStatement')
+			Return "Fonctionne plus ".get_class($objet);
+		if (get_class($objet)=='MySQL\sql')
+			Return $this->Ressource->errorInfo();
+		if (get_class($objet)=='PDOStatement')
 			Return $objet->errorInfo();
 	}
 	
@@ -281,9 +253,10 @@ class sql
 		$i=0;
 		while ($i<$rowid)
 		{
-			$this->sql_fetch_array($statement);
+			$result = $this->sql_fetch_array($statement);
 			$i++;
 		}
+		return $result;
 	}
 	
 	function sql_close($Variable = null)
